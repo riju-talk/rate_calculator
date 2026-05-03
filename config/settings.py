@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     # Local
-    "shipping",
+    "rate_calculator",
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "shipping_db"),
+        "NAME": os.environ.get("DB_NAME", "rate_calculator_db"),
         "USER": os.environ.get("DB_USER", "postgres"),
         "PASSWORD": os.environ.get("DB_PASSWORD", ""),
         "HOST": os.environ.get("DB_HOST", "localhost"),
@@ -95,7 +95,7 @@ REST_FRAMEWORK = {
         "anon": "100/hour",
         "user": "1000/hour",
     },
-    "EXCEPTION_HANDLER": "shipping.api.exceptions.custom_exception_handler",
+    "EXCEPTION_HANDLER": "rate_calculator.api.exceptions.custom_exception_handler",
 }
 
 # ─── Business Settings ────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ LOGGING = {
         "level": "WARNING",
     },
     "loggers": {
-        "shipping": {
+        "rate_calculator": {
             "handlers": ["console"],
             "level": "DEBUG" if DEBUG else "INFO",
             "propagate": False,

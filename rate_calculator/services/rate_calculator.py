@@ -17,7 +17,7 @@ from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
 
-from shipping.models import Hub, RateCard
+from rate_calculator.models import Hub, RateCard
 from .weight_calculator import calculate_chargeable_weight
 from .zone_resolver import resolve_zone
 from .serviceability import get_serviceable_couriers
@@ -70,6 +70,24 @@ def _calculate_cod_charge(rate_card: RateCard, order_value: float) -> float:
     return max(fixed, percent_based)
 
 
+def _calculate_rto_charge(rate_card: RateCard, chargeable_weight: float) -> dict:
+    """
+    RTO (Return To Origin) charge breakdown for a single rate card.
+
+    Formula:
+        extra_weight = max(0, chargeable_weight - rto_base_weight)
+        slabs        = ceil(extra_weight / rto_additional_weight_slab)
+        additional   = slabs × rto_additional_charge
+        total_rto    = rto_base_charge + additional
+    """
+    extra_weight = max(0.0, chargeable_weight - rate_card.rto_base_weight)
+    slabs = math.ceil(extra_weight / rate_card.rto_additional_weight_slab) if extra_weight > 0 else 0
+
+    base = rate_card.rto_base_charge
+    additional = slabs * rate_card.rto_additional_charge
+    return {"base": round(base, 2), "additional": round(additional, 2)}
+
+
 def _calculate_forward_charge(rate_card: RateCard, chargeable_weight: float) -> dict:
     """
     Forward charge breakdown for a single rate card.
@@ -102,18 +120,20 @@ def calculate_rate_for_courier(
             "base": float,
             "additional": float,
             "cod": float,
+            "rto": float,
             "gst": float,
             "total": float,
         }
     """
     fwd = _calculate_forward_charge(rate_card, chargeable_weight)
+    rto = _calculate_rto_charge(rate_card, chargeable_weight)
     cod = (
         _calculate_cod_charge(rate_card, order_value)
         if payment_method == "cod"
         else 0.0
     )
 
-    subtotal = fwd["base"] + fwd["additional"] + cod
+    subtotal = fwd["base"] + fwd["additional"] + rto["base"] + rto["additional"] + cod
     gst = round(subtotal * GST_RATE, 2)
     total = round(subtotal + gst, 2)
 
@@ -121,6 +141,7 @@ def calculate_rate_for_courier(
         "base": fwd["base"],
         "additional": fwd["additional"],
         "cod": round(cod, 2),
+        "rto": round(rto["base"] + rto["additional"], 2),
         "gst": gst,
         "total": total,
     }

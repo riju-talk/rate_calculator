@@ -35,6 +35,7 @@ MOCK_RATE_RESULT = [
             "base": 40.0,
             "additional": 30.0,
             "cod": 22.5,
+            "rto": 0.0,
             "gst": 16.65,
             "total": 109.15,
         },
@@ -50,7 +51,7 @@ class RateCalculatorAPITest(TestCase):
 
     # ── Happy path ────────────────────────────────────────────────────────
 
-    @patch("shipping.api.views.get_rates", return_value=MOCK_RATE_RESULT)
+    @patch("rate_calculator.api.views.get_rates", return_value=MOCK_RATE_RESULT)
     def test_successful_response(self, mock_get_rates):
         response = self.client.post(
             self.url,
@@ -63,7 +64,7 @@ class RateCalculatorAPITest(TestCase):
         self.assertEqual(body["count"], 1)
         self.assertEqual(body["data"][0]["courier"], "XpressBees")
 
-    @patch("shipping.api.views.get_rates", return_value=MOCK_RATE_RESULT)
+    @patch("rate_calculator.api.views.get_rates", return_value=MOCK_RATE_RESULT)
     def test_hub_id_accepted(self, mock_get_rates):
         payload = {**VALID_PAYLOAD}
         del payload["pickup_pincode"]
@@ -126,7 +127,7 @@ class RateCalculatorAPITest(TestCase):
 
     # ── Edge cases ────────────────────────────────────────────────────────
 
-    @patch("shipping.api.views.get_rates", return_value=[])
+    @patch("rate_calculator.api.views.get_rates", return_value=[])
     def test_no_couriers_returns_404(self, mock_get_rates):
         response = self.client.post(
             self.url,
@@ -136,7 +137,7 @@ class RateCalculatorAPITest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse(response.json()["success"])
 
-    @patch("shipping.api.views.get_rates", side_effect=ValueError("Invalid hub"))
+    @patch("rate_calculator.api.views.get_rates", side_effect=ValueError("Invalid hub"))
     def test_service_value_error_returns_400(self, mock_get_rates):
         response = self.client.post(
             self.url,
@@ -146,7 +147,7 @@ class RateCalculatorAPITest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid hub", response.json()["message"])
 
-    @patch("shipping.api.views.get_rates", side_effect=Exception("DB down"))
+    @patch("rate_calculator.api.views.get_rates", side_effect=Exception("DB down"))
     def test_unexpected_exception_returns_500(self, mock_get_rates):
         response = self.client.post(
             self.url,
