@@ -28,7 +28,19 @@ class WeightCalculatorTest(TestCase):
         self.assertAlmostEqual(calculate_chargeable_weight(0.5), 1.0)
 
     def test_missing_dimension_skips_volumetric_weight(self):
-        self.assertAlmostEqual(calculate_chargeable_weight(1.2, 20, 15, 0), 1.2)
+        self.assertAlmostEqual(calculate_chargeable_weight(1.2, 20, 15, 0), 1.5)
+
+    def test_weight_rounded_to_next_slab(self):
+        self.assertAlmostEqual(calculate_chargeable_weight(0.51), 1.0)
+
+    @override_settings(WEIGHT_SLAB_KG=1.0)
+    def test_weight_rounding_uses_settings_slab(self):
+        self.assertAlmostEqual(calculate_chargeable_weight(1.2), 2.0)
+
+    @override_settings(WEIGHT_SLAB_KG=0)
+    def test_invalid_weight_slab_raises(self):
+        with self.assertRaises(ValueError):
+            calculate_chargeable_weight(1.0)
 
     def test_negative_weight_raises(self):
         with self.assertRaises(ValueError):
