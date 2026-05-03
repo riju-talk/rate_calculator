@@ -4,7 +4,7 @@ Pure unit tests — no database, no Django ORM.
 """
 
 from django.test import TestCase, override_settings
-from shipping.services.weight_calculator import (
+from rate_calculator.services.weight_calculator import (
     calculate_chargeable_weight,
     calculate_volumetric_weight,
 )

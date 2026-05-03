@@ -86,6 +86,7 @@ class RateBreakdownSerializer(serializers.Serializer):
     base = serializers.FloatField()
     additional = serializers.FloatField()
     cod = serializers.FloatField()
+    rto = serializers.FloatField(required=False, default=0.0)
     gst = serializers.FloatField()
     total = serializers.FloatField()
 

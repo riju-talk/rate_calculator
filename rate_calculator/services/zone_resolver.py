@@ -11,9 +11,9 @@ Resolution order (first match wins):
 Keeping the hardcoded list short; prefer populating ZoneMapping for accuracy.
 """
 
-from shipping.models import ZoneMapping
+from rate_calculator.models import ZoneMapping
 
-# Special pincodes by 3-digit prefix (more accurate than 2-digit)
+# Special pincodes by 3-digit prefix (accurate per state/UT)
 # North East states, J&K, Andaman, Lakshadweep
 SPECIAL_PINCODE_PREFIXES = {
     # Assam
@@ -34,8 +34,8 @@ SPECIAL_PINCODE_PREFIXES = {
     "737",
     # Andaman & Nicobar
     "744",
-    # Lakshadweep
-    "682",  # Lakshadweep shares prefix with Ernakulam — keep as DB override
+    # Lakshadweep (shares prefix with Ernakulam — keep as DB override)
+    "682",
     # J&K / Ladakh
     "190", "191", "192", "193", "194",
     # Himachal Pradesh border areas

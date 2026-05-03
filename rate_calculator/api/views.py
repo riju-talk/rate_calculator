@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from shipping.services.rate_calculator import get_rates
+from rate_calculator.services.rate_calculator import get_rates
 from .serializers import RateRequestSerializer, CourierRateSerializer
 
 logger = logging.getLogger(__name__)

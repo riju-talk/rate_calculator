@@ -12,7 +12,7 @@ Returns a queryset of Courier objects that meet these criteria.
 """
 
 from django.db.models import QuerySet
-from shipping.models import Courier, CourierServiceability
+from rate_calculator.models import Courier, CourierServiceability
 
 
 def get_serviceable_couriers(

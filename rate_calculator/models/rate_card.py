@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from .courier import Courier
 
 
 class RateCard(models.Model):
@@ -37,7 +36,9 @@ class RateCard(models.Model):
         ("air", "Air / Express"),
     ]
 
-    courier = models.ForeignKey(Courier, on_delete=models.CASCADE, related_name="rate_cards")
+    courier = models.ForeignKey(
+        "Courier", on_delete=models.CASCADE, related_name="rate_cards"
+    )
     zone = models.CharField(max_length=20, choices=ZONE_CHOICES, db_index=True)
     service_type = models.CharField(max_length=20, choices=SERVICE_CHOICES, default="surface")
 
