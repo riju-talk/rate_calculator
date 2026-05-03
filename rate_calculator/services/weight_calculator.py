@@ -1,3 +1,5 @@
+import math
+
 from django.conf import settings
 
 
@@ -13,6 +15,7 @@ def calculate_chargeable_weight(
     height: float = 0.0,
 ) -> float:
     minimum = getattr(settings, "MINIMUM_CHARGEABLE_WEIGHT", 0.5)
+    slab = getattr(settings, "WEIGHT_SLAB_KG", 0.5)
 
     if dead_weight <= 0:
         raise ValueError(f"weight must be positive, got {dead_weight}")
@@ -23,4 +26,9 @@ def calculate_chargeable_weight(
         volumetric_weight = calculate_volumetric_weight(length, width, height)
         chargeable = max(dead_weight, volumetric_weight)
 
-    return max(chargeable, minimum)
+    chargeable = max(chargeable, minimum)
+
+    if slab <= 0:
+        raise ValueError(f"WEIGHT_SLAB_KG must be positive, got {slab}")
+
+    return math.ceil(chargeable / slab) * slab

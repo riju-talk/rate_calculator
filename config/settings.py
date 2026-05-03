@@ -19,6 +19,7 @@ ALLOWED_HOSTS = [
 GST_ON_SHIPMENT = float(os.environ.get("GST_ON_SHIPMENT", "0.18"))
 VOLUMETRIC_DIVISOR = int(os.environ.get("VOLUMETRIC_DIVISOR", "5000"))
 MINIMUM_CHARGEABLE_WEIGHT = float(os.environ.get("MIN_WEIGHT", "0.5"))
+WEIGHT_SLAB_KG = float(os.environ.get("WEIGHT_SLAB_KG", "0.5"))
 RATE_CACHE_TTL = int(os.environ.get("RATE_CACHE_TTL", "300"))
 
 INSTALLED_APPS = [
