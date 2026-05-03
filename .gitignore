@@ -25,7 +25,6 @@ venv/
 env/
 ENV/
 .venv/
-.env/
 
 # Django
 *.log
@@ -34,7 +33,11 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+
+# Environment variables
 .env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -46,22 +49,14 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage and test output
 .coverage
-htmlcov/
 .coverage.*
-.cov
-
-# Testing
+htmlcov/
 .pytest_cache/
 .mypy_cache/
 
-# Environment variables
-.env
-.env.local
-*.env.*
-
-# Compressed files
+# Archives
 *.zip
 *.gz
 *.tar
@@ -84,5 +79,3 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-.venv/
